@@ -14,7 +14,7 @@ st.subheader("Shelter Search App")
 if "center_location" not in st.session_state:
     st.session_state.center_location = [35.681236, 139.767125]
 
-if "user_markers" not in st.session_state:
+if "user_markers" not in st.session_state or len(st.session_state.user_markers) == 0:
     st.session_state.user_markers = []
 
 if "route_coordinates" not in st.session_state:
@@ -165,6 +165,14 @@ folium.raster_layers.TileLayer(
     opacity=0.7,
 ).add_to(m)
 
+if len(st.session_state.user_markers) == 0:
+    folium.Marker(
+        location=st.session_state.center_location,
+        popup="Initial Location",
+        icon=folium.Icon(color="blue", icon="info-sign"),
+    ).add_to(m)
+
+
 # 既存のユーザーマーカーを地図に追加
 for marker in st.session_state.user_markers:
     folium.Marker(
@@ -215,6 +223,5 @@ if output and output["all_drawings"]:
             st.session_state.center_location = new_center
             # 新しいマーカーをユーザーマーカーに追加
             st.session_state.user_markers.append(new_center)
-            # ルート情報をクリア
             st.session_state.route_coordinates = {}
             st.rerun()
