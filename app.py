@@ -142,13 +142,13 @@ def search_address(address):
 # サイドバーにアドレス検索機能とルート検索ボタンを追加
 with st.sidebar:
     # 現在地取得ボタン
-    if st.button("Get Current Location"):
-        lat, lon = get_current_location()
-        if lat and lon:
-            update_location(lat, lon)
-            st.sidebar.success(f"Current location set to: ({lat}, {lon})")
-        else:
-            st.sidebar.error("Unable to retrieve current location.")
+    # if st.button("Get Current Location"):
+    #    lat, lon = get_current_location()
+    #    if lat and lon:
+    #        update_location(lat, lon)
+    #        st.sidebar.success(f"Current location set to: ({lat}, {lon})")
+    #    else:
+    #        st.sidebar.error("Unable to retrieve current location.")
 
     # 住所検索
     st.subheader("Address Search")
