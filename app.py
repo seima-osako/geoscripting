@@ -1,6 +1,5 @@
 import folium
 from folium.plugins import Draw
-import geocoder
 from geopy import distance, Nominatim
 import pandas as pd
 import streamlit as st
