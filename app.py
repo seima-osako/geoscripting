@@ -5,11 +5,13 @@ from geopy import distance, Nominatim
 import pandas as pd
 import streamlit as st
 from streamlit_folium import st_folium
+from streamlit_js_eval import get_geolocation
 import requests
 import numpy as np
 
 st.set_page_config(layout="wide")
 st.subheader("Shelter Search App")
+
 
 # セッションステートの初期化
 if "center_location" not in st.session_state:
@@ -26,12 +28,12 @@ if "shelters" not in st.session_state:
 
 
 def get_current_location():
-    # Get the location based on the IP address
-    g = geocoder.ip("me")
+    location = get_geolocation()
 
     # Extract the latitude and longitude
-    if g.ok:
-        lat, lon = g.latlng
+    if location:
+        lat = location["coords"]["latitude"]
+        lon = location["coords"]["longitude"]
         return lat, lon
     else:
         return None, None
