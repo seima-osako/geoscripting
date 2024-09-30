@@ -125,16 +125,6 @@ def update_location(lat, lon):
     st.session_state.route_coordinates = {}
 
 
-def get_current_location():
-    """IPアドレスから現在位置を取得"""
-    g = geocoder.ip("me")
-    if g.ok:
-        lat, lon = g.latlng
-        return lat, lon
-    else:
-        return None, None
-
-
 def search_address(address):
     """住所から位置を検索"""
     geolocator = Nominatim(user_agent="geo_search")
