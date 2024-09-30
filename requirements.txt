@@ -2,3 +2,4 @@ folium>=0.17.0
 streamlit>=1.38.0
 streamlit-folium>=0.22.1
 geopy>=2.4.1
+geocoder>=1.38.1

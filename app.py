@@ -1,5 +1,6 @@
 import folium
 from folium.plugins import Draw
+import geocoder
 from geopy import distance, Nominatim
 import pandas as pd
 import streamlit as st
@@ -22,6 +23,18 @@ if "route_coordinates" not in st.session_state:
 
 if "shelters" not in st.session_state:
     st.session_state.shelters = pd.DataFrame()
+
+
+def get_current_location():
+    # Get the location based on the IP address
+    g = geocoder.ip("me")
+
+    # Extract the latitude and longitude
+    if g.ok:
+        lat, lon = g.latlng
+        return lat, lon
+    else:
+        return None, None
 
 
 def update_shelter_markers(m):
@@ -105,30 +118,57 @@ def fetch_routes():
             st.sidebar.warning(f"Unable to retrieve the route to {shelter_name}.")
 
 
+def update_location(lat, lon):
+    """セッションステートの位置情報とルート情報を更新する"""
+    st.session_state.center_location = [lat, lon]
+    st.session_state.route_coordinates = {}
+
+
+def get_current_location():
+    """IPアドレスから現在位置を取得"""
+    g = geocoder.ip("me")
+    if g.ok:
+        lat, lon = g.latlng
+        return lat, lon
+    else:
+        return None, None
+
+
+def search_address(address):
+    """住所から位置を検索"""
+    geolocator = Nominatim(user_agent="geo_search")
+    try:
+        location = geolocator.geocode(address)
+        if location:
+            return location.latitude, location.longitude
+        else:
+            return None, None
+    except Exception as e:
+        st.sidebar.error(f"An error occurred: {e}")
+        return None, None
+
+
 # サイドバーにアドレス検索機能とルート検索ボタンを追加
 with st.sidebar:
+    # 現在地取得ボタン
+    if st.button("Get Current Location"):
+        lat, lon = get_current_location()
+        if lat and lon:
+            update_location(lat, lon)
+            st.sidebar.success(f"Current location set to: ({lat}, {lon})")
+        else:
+            st.sidebar.error("Unable to retrieve current location.")
+
+    # 住所検索
     st.subheader("Address Search")
     address = st.text_input("Please enter the address to search:")
-    search_button = st.button("Search")
-
-    if search_button and address:
-        geolocator = Nominatim(user_agent="geo_search")
-        try:
-            location = geolocator.geocode(address)
-            if location:
-                st.session_state.center_location = [
-                    location.latitude,
-                    location.longitude,
-                ]
-                st.sidebar.success(
-                    f"Search Results: ({location.latitude}, {location.longitude})"
-                )
-                # ルート情報をクリア
-                st.session_state.route_coordinates = {}
-            else:
-                st.sidebar.error("The specified address could not be found.")
-        except Exception as e:
-            st.sidebar.error(f"An error occurred: {e}")
+    if st.button("Search"):
+        lat, lon = search_address(address)
+        if lat and lon:
+            update_location(lat, lon)
+            st.sidebar.success(f"Search Results: ({lat}, {lon})")
+        else:
+            st.sidebar.error("The specified address could not be found.")
 
     st.subheader("Route to Shelter")
     route_button = st.button("Search Route")
