@@ -3,5 +3,5 @@ plotly
 rasterio
 streamlit
 streamlit-folium
-streamlit-on-Hover-tabsl
+streamlit-on-Hover-tabs
 
