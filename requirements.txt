@@ -1,6 +1,7 @@
 folium
 plotly
 rasterio
+shapely
 streamlit
 streamlit-folium
 streamlit-on-Hover-tabs
