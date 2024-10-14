@@ -1,6 +1,7 @@
-folium>=0.17.0
-geopy>=2.4.1
-streamlit>=1.38.0
-streamlit-folium>=0.22.1
-streamlit-js-eval>=0.1.7
+folium
+plotly
+rasterio
+streamlit
+streamlit-folium
+streamlit-on-Hover-tabsl
 
