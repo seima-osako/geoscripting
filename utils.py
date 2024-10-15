@@ -10,9 +10,9 @@ from shapely.geometry import shape
 import tempfile
 
 
-def show_map(sample_tiff, threshold1, threshold2):
+def show_map(tiff_path, threshold1, threshold2):
 
-    with rasterio.open(sample_tiff) as src:
+    with rasterio.open(tiff_path) as src:
         data = src.read(1)
         data = np.where(data == 0, np.nan, data)
         profile = src.profile
@@ -87,40 +87,24 @@ def show_map(sample_tiff, threshold1, threshold2):
 
             map_data = st_folium(
                 m,
-                height=750,
-                width=500,
+                height=800,
+                # width=500,
                 returned_objects=["all_drawings"],
-                # use_container_width=True,
+                use_container_width=True,
             )
-            # legend_html = """
-            # <div style="
-            # position: relative;
-            # bottom: 250px; left: 50px; width: 150px; height: 120px;
-            # z-index:9999; font-size:14px;
-            # background-color:white;
-            # opacity: 0.8;
-            # padding: 10px;
-            # border:2px solid grey;
-            # ">
-            # &nbsp;<b>Legend</b><br>
-            # &nbsp;<i style="background:green;width:10px;height:10px;display:inline-block;"></i>&nbsp;Suitable<br>
-            # &nbsp;<i style="background:yellow;width:10px;height:10px;display:inline-block;"></i>&nbsp;Sub-suitable<br>
-            # &nbsp;<i style="background:red;width:10px;height:10px;display:inline-block;"></i>&nbsp;Unsuitable
-            # </div>
-            # """
-            # st.markdown(legend_html, unsafe_allow_html=True)
         with col_charts:
-            st.write("**Overall**")
+            st.write("**Overall Suitability Distribution**")
             fig_overall = go.Figure(
                 data=[
                     go.Pie(
                         labels=["Unsuitable", "Sub-suitable", "Suitable"],
                         values=[area1, area2, area3],
                         hole=0.3,
-                        marker=dict(colors=["red", "yellow", "green"]),
+                        marker=dict(colors=["red", "yellow", "lawngreen"]),
                         hoverinfo="label+percent",
-                        textinfo="value",
-                        textfont_size=15,
+                        textinfo="text",
+                        texttemplate="%{value} km²",
+                        textfont_size=14,
                     )
                 ]
             )
@@ -158,10 +142,11 @@ def show_map(sample_tiff, threshold1, threshold2):
                                     labels=["Unsuitable", "Sub-suitable", "Suitable"],
                                     values=[area1_roi, area2_roi, area3_roi],
                                     hole=0.3,
-                                    marker=dict(colors=["red", "yellow", "green"]),
+                                    marker=dict(colors=["red", "yellow", "lawngreen"]),
                                     hoverinfo="label+percent",
-                                    textinfo="value",
-                                    textfont_size=15,
+                                    textinfo="text",
+                                    texttemplate="%{value} km²",
+                                    textfont_size=14,
                                 )
                             ]
                         )

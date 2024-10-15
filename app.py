@@ -6,18 +6,33 @@ from utils import show_map
 
 st.set_page_config(layout="wide")
 
-st.header("Demo")
+st.header("Suitability Map")
 st.markdown("<style>" + open("./style.css").read() + "</style>", unsafe_allow_html=True)
 
 
 with st.sidebar:
     tabs = on_hover_tabs(
-        tabName=["Dataset", "Map"],
-        iconName=["description", "map"],
+        tabName=["Help", "Map", "Dataset"],
+        iconName=["help", "map", "description"],
         default_choice=0,
     )
+if tabs == "Help":
+    st.subheader("How to Use")
+    st.info(
+        """
+        **View Suitability Map**
+        1. Select the suitability map for "Coffee", "Cacao", or "Combined".
+        2. Adjust the thresholds using the sliders in the sidebar to classify areas as Unsuitable, Sub-suitable, or Suitable.
 
-if tabs == "Dataset":
+        **Select Area of Interest (AOI)**
+        1. Use the drawing tools on the map to define an AOI.
+        2. Click the "Extract" button to view detailed statistics for the selected AOI.
+
+        """
+    )
+
+elif tabs == "Dataset":
+    st.subheader("Table 1. Geospatial data used")
     datasets_list = """
     | Layers |	Data-Links	| Authors	| Date	| Resolution | 
     | ------ | ---------- | ------- | ----- | ---------- |
@@ -30,28 +45,47 @@ if tabs == "Dataset":
     """
     st.markdown(datasets_list)
 
+    st.subheader("Table 2. Suitability Ranking")
+    with open("SuitabilityRanking.md", "r", encoding="utf-8") as file:
+        markdown_content = file.read()
+        st.markdown(markdown_content)
 elif tabs == "Map":
     suitability_map = st.radio(
         "Suitability Map for",
-        ["Coffee", "Cocoa", "Combined"],
-        index=0,
+        ["Coffee", "Cacao", "Combined"],
+        index=2,
         horizontal=True,
     )
+    with st.expander("ℹ️ Threshold Settings"):
+        st.markdown(
+            """
+            Adjust the thresholds to classify areas as Unsuitable, Sub-suitable, or Suitable.
+            - **Threshold 1:** Defines the boundary between Unsuitable and Sub-suitable areas.
+            - **Threshold 2:** Defines the boundary between Sub-suitable and Suitable areas.
+            """
+        )
+        threshold1 = st.slider(
+            "Threshold1 between Unsuitable and Sub-suitable",
+            min_value=2,
+            max_value=60,
+            value=40,
+            step=1,
+        )
 
-    threshold1 = st.number_input(
-        "Threshold between Sub-suitable and Unsuitable",
-        value=20,
-    )
-    threshold2 = st.number_input(
-        "Threshold between Suitable and Sub-suitable", value=25
-    )
+        threshold2 = st.slider(
+            "Threshold2 between Sub-suitable and Suitable",
+            min_value=2,
+            max_value=60,
+            value=50,
+            step=1,
+        )
 
     if suitability_map == "Coffee":
-        sample_tiff = "data/coffee_suitability.tif"
-        show_map(sample_tiff, threshold1, threshold2)
-    elif suitability_map == "Cocoa":
-        sample_tiff = "data/cacao_suitability.tif"
-        show_map(sample_tiff, threshold1, threshold2)
+        tiff_path = "data/coffee_suitability.tif"
+        show_map(tiff_path, threshold1, threshold2)
+    elif suitability_map == "Cacao":
+        tiff_path = "data/cacao_suitability.tif"
+        show_map(tiff_path, threshold1, threshold2)
     else:
-        sample_tiff = "data/suitability.tif"
-        show_map(sample_tiff, threshold1, threshold2)
+        tiff_path = "data/suitability.tif"
+        show_map(tiff_path, threshold1, threshold2)
