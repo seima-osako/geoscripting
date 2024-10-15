@@ -155,10 +155,10 @@ def show_map(sample_tiff, threshold1, threshold2):
                         fig_selected = go.Figure(
                             data=[
                                 go.Pie(
-                                    labels=["Suitable", "Sub-suitable", "Unsuitable"],
+                                    labels=["Unsuitable", "Sub-suitable", "Suitable"],
                                     values=[area1_roi, area2_roi, area3_roi],
                                     hole=0.3,
-                                    marker=dict(colors=["green", "yellow", "red"]),
+                                    marker=dict(colors=["red", "yellow", "green"]),
                                     hoverinfo="label+percent",
                                     textinfo="value",
                                     textfont_size=15,
