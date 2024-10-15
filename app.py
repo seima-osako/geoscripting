@@ -12,8 +12,8 @@ st.markdown("<style>" + open("./style.css").read() + "</style>", unsafe_allow_ht
 
 with st.sidebar:
     tabs = on_hover_tabs(
-        tabName=["Dataset", "Coffee", "Cacao"],
-        iconName=["description", "coffee", "eco"],
+        tabName=["Dataset", "Map"],
+        iconName=["description", "map"],
         default_choice=0,
     )
 
@@ -30,9 +30,28 @@ if tabs == "Dataset":
     """
     st.markdown(datasets_list)
 
-elif tabs == "Coffee":
-    sample_tiff = "data/Slope.tif"
-    show_map(sample_tiff)
-elif tabs == "Cacao":
-    sample_tiff = "data/Slope.tif"
-    show_map(sample_tiff)
+elif tabs == "Map":
+    suitability_map = st.radio(
+        "Suitability Map for",
+        ["Coffee", "Cocoa", "Combined"],
+        index=0,
+        horizontal=True,
+    )
+
+    threshold1 = st.number_input(
+        "Threshold between Sub-suitable and Unsuitable",
+        value=20,
+    )
+    threshold2 = st.number_input(
+        "Threshold between Suitable and Sub-suitable", value=25
+    )
+
+    if suitability_map == "Coffee":
+        sample_tiff = "data/coffee_suitability.tif"
+        show_map(sample_tiff, threshold1, threshold2)
+    elif suitability_map == "Cocoa":
+        sample_tiff = "data/cacao_suitability.tif"
+        show_map(sample_tiff, threshold1, threshold2)
+    else:
+        sample_tiff = "data/suitability.tif"
+        show_map(sample_tiff, threshold1, threshold2)

@@ -1,4 +1,3 @@
-from branca.element import Template, MacroElement
 import folium
 from folium.plugins import Draw
 import numpy as np
@@ -11,13 +10,15 @@ from shapely.geometry import shape
 import tempfile
 
 
-def show_map(sample_tiff):
+def show_map(sample_tiff, threshold1, threshold2):
+
     with rasterio.open(sample_tiff) as src:
         data = src.read(1)
+        data = np.where(data == 0, np.nan, data)
         profile = src.profile
         bounds = src.bounds
 
-    pixel_area_km2 = 30 * 30 / 1_000_000
+    pixel_area_km2 = 10 * 10 / 1_000_000
 
     def calculate_areas(arr, pixel_area_km2):
         area1 = np.count_nonzero(arr == 1) * pixel_area_km2
@@ -26,25 +27,23 @@ def show_map(sample_tiff):
 
         return round(area1, 2), round(area2, 2), round(area3, 2)
 
-    threshold1 = 10
-    threshold2 = 30
-
     if threshold1 >= threshold2:
-        st.sidebar.error("Warning: It shoule be Suitable < Sub-suitable < Unsuitable")
+        st.error("Warning: It shoule be Unsuitable < Sub-suitable < Suitable")
     else:
         classified = np.zeros_like(data, dtype=np.uint8)
-        classified[data < threshold1] = 1  # Suitable
+        classified[data < threshold1] = 1  # Unsuitable
         classified[(data >= threshold1) & (data < threshold2)] = 2  # Sub-suitable
-        classified[data >= threshold2] = 3  # Unsuitable
+        classified[data >= threshold2] = 3  # Suitable
 
         area1, area2, area3 = calculate_areas(classified, pixel_area_km2)
 
         col_map, col_charts = st.columns([2, 1])
         with col_map:
+
             color_mapping = {
-                1: [0, 255, 0, 255],  # Green: Suitable
+                1: [255, 0, 0, 255],  # Red: Unsuitable
                 2: [255, 255, 0, 255],  # Yellow: Sub-suitable
-                3: [255, 0, 0, 255],  # Red: Unsuitable
+                3: [0, 255, 0, 255],  # Green: Suitable
             }
 
             colored_classified = np.zeros(
@@ -73,30 +72,6 @@ def show_map(sample_tiff):
                 zindex=1,
             ).add_to(m)
 
-            # ref. https://www.geeksforgeeks.org/create-a-legend-on-a-folium-map-a-comprehensive-guide/
-            legend_html = """
-            {% macro html() %}
-            <div style="
-                position: fixed; 
-                bottom: 50px; left: 50px; width: 150px; height: 120px; 
-                z-index:9999; font-size:14px;
-                background-color:white;
-                opacity: 0.8;
-                padding: 10px;
-                border:2px solid grey;
-            ">
-                &nbsp;<b>Legend</b><br>
-                &nbsp;<i style="background:green;width:10px;height:10px;display:inline-block;"></i>&nbsp;Suitable<br>
-                &nbsp;<i style="background:yellow;width:10px;height:10px;display:inline-block;"></i>&nbsp;Sub-suitable<br>
-                &nbsp;<i style="background:red;width:10px;height:10px;display:inline-block;"></i>&nbsp;Unsuitable
-            </div>
-            {% endmacro %}
-            """
-
-            legend = MacroElement()
-            legend._template = Template(legend_html)
-            m.get_root().add_child(legend)
-
             draw = Draw(
                 draw_options={
                     "polyline": False,
@@ -112,20 +87,37 @@ def show_map(sample_tiff):
 
             map_data = st_folium(
                 m,
-                height=800,
+                height=750,
+                width=500,
                 returned_objects=["all_drawings"],
-                use_container_width=True,
+                # use_container_width=True,
             )
-
+            # legend_html = """
+            # <div style="
+            # position: relative;
+            # bottom: 250px; left: 50px; width: 150px; height: 120px;
+            # z-index:9999; font-size:14px;
+            # background-color:white;
+            # opacity: 0.8;
+            # padding: 10px;
+            # border:2px solid grey;
+            # ">
+            # &nbsp;<b>Legend</b><br>
+            # &nbsp;<i style="background:green;width:10px;height:10px;display:inline-block;"></i>&nbsp;Suitable<br>
+            # &nbsp;<i style="background:yellow;width:10px;height:10px;display:inline-block;"></i>&nbsp;Sub-suitable<br>
+            # &nbsp;<i style="background:red;width:10px;height:10px;display:inline-block;"></i>&nbsp;Unsuitable
+            # </div>
+            # """
+            # st.markdown(legend_html, unsafe_allow_html=True)
         with col_charts:
             st.write("**Overall**")
             fig_overall = go.Figure(
                 data=[
                     go.Pie(
-                        labels=["Suitable", "Sub-suitable", "Unsuitable"],
+                        labels=["Unsuitable", "Sub-suitable", "Suitable"],
                         values=[area1, area2, area3],
                         hole=0.3,
-                        marker=dict(colors=["green", "yellow", "red"]),
+                        marker=dict(colors=["red", "yellow", "green"]),
                         hoverinfo="label+percent",
                         textinfo="value",
                         textfont_size=15,
