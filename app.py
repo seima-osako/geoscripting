@@ -102,7 +102,13 @@ if tabs == "Home":
         LSM--> ArcMap
     """
     stmd.st_mermaid(code, height="500px")
-
+    st.html(
+        """
+        <div align="center">
+        <b>Figure 1</b> Project flowchart
+        </div>
+        """
+    )
     st.markdown(
         """
         ### 📃References
