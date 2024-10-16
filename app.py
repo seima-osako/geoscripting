@@ -13,14 +13,14 @@ st.markdown("<style>" + open("./style.css").read() + "</style>", unsafe_allow_ht
 
 with st.sidebar:
     tabs = on_hover_tabs(
-        tabName=["Home", "Help", "Map", "Dataset"],
-        iconName=["home", "help", "map", "description"],
+        tabName=["Home", "Map", "Dataset"],
+        iconName=["home", "map", "description"],
         default_choice=0,
     )
 if tabs == "Home":
     st.markdown(
         """
-        ### ℹ️Quick info
+        ### ℹ️ Quick info
         - **Title:** Suitability Mapping for new agroforestry plots of cacoa and coffee in Thailand
 
         - **Team name and members:**
@@ -34,7 +34,7 @@ if tabs == "Home":
     )
     st.info(
         """
-        ### 📊About the project
+        ### 📊 About the project
         ![Alt text](https://lwr.org/sites/default/files/styles/hero_image_country/public/DSC03745.JPG.jpeg?itok=rSImDUzV)
         This project was one of the available projects during the course Geoscripting and involved developing a **suitability mapping** model to identify new areas for **cacao and coffee agroforestry in Thailand**. 
         
@@ -113,20 +113,6 @@ if tabs == "Home":
         - Singh, K., Fuentes, I., Fidelis, C., Yinil, D., Sanderson, T., Snoeck, D., Minasny, B., & Field, D. J. (2021). Cocoa suitability mapping using multi-criteria decision making: An agile step towards soil security. Soil Security, 5, 100019. https://doi.org/10.1016/j.soisec.2021.100019
         """
     )
-elif tabs == "Help":
-    st.subheader("How to use the map")
-    st.info(
-        """
-        **View Suitability Map**
-        1. Select the suitability map for "Coffee", "Cacao", or "Combined".
-        2. Adjust the thresholds using the sliders in the sidebar to classify areas as Unsuitable, Sub-suitable, or Suitable.
-
-        **Select Area of Interest (AOI)**
-        1. Use the drawing tools on the map to define an AOI.
-        2. Click the "Extract" button to view detailed statistics for the selected AOI.
-
-        """
-    )
 
 elif tabs == "Dataset":
     st.subheader("Table 1. Geospatial data used")
@@ -147,13 +133,26 @@ elif tabs == "Dataset":
         markdown_content = file.read()
         st.markdown(markdown_content)
 elif tabs == "Map":
+    with st.expander("How to use the map"):
+        st.info(
+            """
+        **View Suitability Map**
+        1. Select the suitability map for "Coffee", "Cacao", or "Combined".
+        2. Adjust the thresholds using the sliders in the sidebar to classify areas as Unsuitable, Sub-suitable, or Suitable.
+
+        **Select Area of Interest (AOI)**
+        1. Use the drawing tools on the map to define an AOI.
+        2. Click the "Extract" button to view detailed statistics for the selected AOI.
+
+        """
+        )
     suitability_map = st.radio(
         "Suitability Map for",
         ["Coffee", "Cacao", "Combined"],
         index=2,
         horizontal=True,
     )
-    with st.expander("ℹ️ Threshold Settings"):
+    with st.expander("Threshold Settings"):
         st.markdown(
             """
             Adjust the thresholds to classify areas as Unsuitable, Sub-suitable, or Suitable.
