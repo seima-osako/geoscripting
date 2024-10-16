@@ -36,12 +36,12 @@ elif tabs == "Dataset":
     datasets_list = """
     | Layers |	Data-Links	| Authors	| Date	| Resolution | 
     | ------ | ---------- | ------- | ----- | ---------- |
-    | DEM    |  [NASADEM](https://developers.google.com/earth-engine/datasets/catalog/NASA_NASADEM_HGT_001)| NASA | 2000-02-22 | 30m | 
+    | Slope|[NASADEM 30m](https://developers.google.com/earth-engine/datasets/catalog/NASA_NASADEM_HGT_001)| NASA | 2000-02-11 till 2000-02-222 | 30m | 
     | Landuse | [ESA WorldCover 10m v100](https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v100) | ESA | 2020-2021 | 10m |
-    | Soil    | [SOIL TYP](https://developers.google.com/earth-engine/datasets/catalog/OpenLandMap_SOL_SOL_TEXTURE-CLASS_USDA-TT_M_v02)| DOI | 1950-2017 | 250m |
-    | Roads | [Road network](https://gee-community-catalog.org/projects/grip/?h=ro) | GRIP global roads database | 2021-04-03 | 8km |
-    | Precipitation | [Precipitation](https://developers.google.com/earth-engine/datasets/catalog/NASA_GPM_L3_IMERG_MONTHLY_V06?hl=en) | NASA & JAXA  | 2000-06-01 to 2024-05-01 | 11132 meters  |
-    | Water Bodies | [Watersheds](https://data.humdata.org/dataset/thailand-water-bodies-water-courses?) | HDX | 2018-08-16 |
+    | Soil Texture   | [Soil texture (USDA system) at 100m](https://developers.google.com/earth-engine/datasets/catalog/OpenLandMap_SOL_SOL_TEXTURE-CLASS_USDA-TT_M_v02)| DOI | 1950-2017 | 250m |
+    | Precipitation | [GPM (IMERG) v6](https://developers.google.com/earth-engine/datasets/catalog/NASA_GPM_L3_IMERG_MONTHLY_V06?hl=en) | NASA & JAXA  | 2000-06-01 to 2024-05-01 | 11132 meters  |
+    | Roads | [Road network](https://gee-community-catalog.org/projects/grip/?h=ro) | GRIP global roads database | 2021-04-03 | n/a |
+    | Streams | [Streams in Thailand](http://www.savgis.org/donnees-sig-2/thailand.html) | Unknown | Unknown | n/a |
     """
     st.markdown(datasets_list)
 
