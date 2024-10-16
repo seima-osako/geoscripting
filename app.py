@@ -1,5 +1,6 @@
 # App to visualize the SuitabilityMap
 import streamlit as st
+import streamlit_mermaid as stmd
 from st_on_hover_tabs import on_hover_tabs
 
 from utils import show_map
@@ -12,12 +13,111 @@ st.markdown("<style>" + open("./style.css").read() + "</style>", unsafe_allow_ht
 
 with st.sidebar:
     tabs = on_hover_tabs(
-        tabName=["Help", "Map", "Dataset"],
-        iconName=["help", "map", "description"],
+        tabName=["Home", "Help", "Map", "Dataset"],
+        iconName=["home", "help", "map", "description"],
         default_choice=0,
     )
-if tabs == "Help":
-    st.subheader("How to Use")
+if tabs == "Home":
+    st.info(
+        """
+        ### Quick info
+        - **Title:** Suitability Mapping for new agroforestry plots of cacoa and coffee in Thailand
+
+        - **Team name and members:**
+        Spectacular_polite_caped_buffalo
+
+            _Amina Shehzadi, Seima Osako, Gaia Bolder and Jari Bos_
+
+        - **Challenge number:** 2
+
+        """
+    )
+
+    st.markdown("### About the project")
+    st.markdown(
+        "![Alt text](https://lwr.org/sites/default/files/styles/hero_image_country/public/DSC03745.JPG.jpeg?itok=rSImDUzV)"
+    )
+    st.markdown(
+        """
+        This project was one of the available projects during the course Geoscripting and involved developing a **suitability mapping** model to identify new areas for **cacao and coffee agroforestry in Thailand**. 
+        
+        In this project **land use, soil texture, slope, precipitation, road and stream data** were used(see Data sources). 
+        Our workflow consist of several steps (see **Figure 1**). For each the road and stream vector data, raster data were created containing for each cell in the Area of Interest(AoI) the distance to the nearest road or stream. 
+        
+        All raster data were standardised to the 10m resolution of the Land Use dataset. Based on found literatures, suitability scores for both cacao and coffee were established. 
+        For each criteria layer, raster values were transformed according to these chosen suitability scores.
+        Next, seperate suitability maps for cacao and coffee were created by summing up the suitability values of each criteria layer. 
+        
+        We should mention that this project focused on geoscripting, therefore **we did not apply pair-wise comparison and assigning weights**. 
+        At last, suitability map for cacao and coffee together was made by combining the individual suitability maps. 
+        """
+    )
+    code = """
+    flowchart TD
+        %% Datasets
+        subgraph Datasets["Data sets"]
+            style Datasets fill:#D2691E
+            NASADEM["NASADEM 30m"]
+            SoilTYP["Soil texture (USDA system) at 100m"]
+            Precipitation["GPM (IMERG) v6"]
+            ESAWorldCover["ESA WorldCover 10m v100"]
+            Watersheds["Thailand stream data"]
+            RoadNetwork["GRIP4"]
+        end
+        
+        %% Layers
+        subgraph Layers[ ]
+            style Layers fill:#228B22
+            Slope["Slope (degrees)"]
+            SoilTexture["Soil Texture"]
+            PrecipitationLayer["Precipitation (mm/yr)"]
+            LandUse["Land Use"]
+            ProximityWater["Proximity to water/streams (m)"]
+            ProximityRoads["Proximity to roads (m)"]
+        end
+        
+        %% Layer Grouping Arrows
+        NASADEM --> Slope
+        SoilTYP --> SoilTexture
+        Precipitation --> PrecipitationLayer
+        ESAWorldCover --> LandUse
+        Watersheds --> ProximityWater
+        RoadNetwork --> ProximityRoads
+
+        %% Analysis
+        Scores["Establish Suitability Scores"]
+
+        Slope --> Scores
+        SoilTexture --> Scores
+        PrecipitationLayer --> Scores
+        LandUse --> Scores
+        ProximityWater --> Scores
+        ProximityRoads --> Scores
+
+        NWO["Non-weighted overlay"]
+        Scores--> NWO
+
+        LSM{"Land Suitability Map (LSM)"}
+        style LSM fill:#4682B4
+        NWO--> LSM
+
+        ArcMap["Visual comparison with ArcMap analysis"]
+        LSM--> ArcMap
+    """
+    stmd.st_mermaid(code, height="500px")
+
+    st.markdown(
+        """
+        ### References
+        - Eduardo Chavez. Sanitary pruning as part of ongoing rehabilitation at a cacao farm in Guayas, Ecuador. ESPOL. https://lwr.org/blog/2021/rehabilitation-and-renovation-cocoa-agroforestry-systems.
+        - Sawasawa, H. L. A. (2003). Crop yield estimation: Integrating RS, GIS, and management factors. In International Institute for Geo-information Science and Earth Observation, International Institute for Geo-information Science and Earth Observation [Thesis].) [https://webapps.itc.utwente.nl/librarywww/papers_2003/msc/nrm/sawasawa.pdf]
+        - López, R. S., Fernández, D. G., López, J. O. S., Briceño, N. B. R., Oliva, M., Murga, R. E. T., Trigoso, D. I., Castillo, E. B., & Gurbillón, M. Á. B. (2020). Land Suitability for Coffee (Coffea arabica) Growing in Amazonas, Peru: Integrated Use of AHP, GIS and RS. ISPRS International Journal of Geo-Information, 9(11), 673. https://doi.org/10.3390/ijgi9110673
+        - sei-Gyabaah, A. P., Antwi, M., Addo, S., & Osei, P. (2023). Land suitability analysis for cocoa (Theobroma cacao) production in the Sunyani municipality, Bono region, Ghana. Smart Agricultural Technology, 5, 100262. https://doi.org/10.1016/j.atech.2023.100262
+        - Singh, K., Fuentes, I., Fidelis, C., Yinil, D., Sanderson, T., Snoeck, D., Minasny, B., & Field, D. J. (2021). Cocoa suitability mapping using multi-criteria decision making: An agile step towards soil security. Soil Security, 5, 100019. https://doi.org/10.1016/j.soisec.2021.100019
+        """
+    )
+elif tabs == "Help":
+    st.subheader("How to use the map")
     st.info(
         """
         **View Suitability Map**

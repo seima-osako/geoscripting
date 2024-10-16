@@ -4,5 +4,6 @@ rasterio
 shapely
 streamlit
 streamlit-folium
+streamlit-mermaid
 streamlit-on-Hover-tabs
 
