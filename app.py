@@ -7,7 +7,7 @@ from utils import show_map
 
 st.set_page_config(layout="wide")
 
-st.header("Suitability Map")
+st.header("🌲Suitability Map")
 st.markdown("<style>" + open("./style.css").read() + "</style>", unsafe_allow_html=True)
 
 
@@ -20,7 +20,7 @@ with st.sidebar:
 if tabs == "Home":
     st.markdown(
         """
-        ### Quick info
+        ### ℹ️Quick info
         - **Title:** Suitability Mapping for new agroforestry plots of cacoa and coffee in Thailand
 
         - **Team name and members:**
@@ -34,7 +34,7 @@ if tabs == "Home":
     )
     st.info(
         """
-        ### About the project
+        ### 📊About the project
         ![Alt text](https://lwr.org/sites/default/files/styles/hero_image_country/public/DSC03745.JPG.jpeg?itok=rSImDUzV)
         This project was one of the available projects during the course Geoscripting and involved developing a **suitability mapping** model to identify new areas for **cacao and coffee agroforestry in Thailand**. 
         
@@ -105,7 +105,7 @@ if tabs == "Home":
 
     st.markdown(
         """
-        ### References
+        ### 📃References
         - Eduardo Chavez. Sanitary pruning as part of ongoing rehabilitation at a cacao farm in Guayas, Ecuador. ESPOL. https://lwr.org/blog/2021/rehabilitation-and-renovation-cocoa-agroforestry-systems.
         - Sawasawa, H. L. A. (2003). Crop yield estimation: Integrating RS, GIS, and management factors. In International Institute for Geo-information Science and Earth Observation, International Institute for Geo-information Science and Earth Observation [Thesis].) [https://webapps.itc.utwente.nl/librarywww/papers_2003/msc/nrm/sawasawa.pdf]
         - López, R. S., Fernández, D. G., López, J. O. S., Briceño, N. B. R., Oliva, M., Murga, R. E. T., Trigoso, D. I., Castillo, E. B., & Gurbillón, M. Á. B. (2020). Land Suitability for Coffee (Coffea arabica) Growing in Amazonas, Peru: Integrated Use of AHP, GIS and RS. ISPRS International Journal of Geo-Information, 9(11), 673. https://doi.org/10.3390/ijgi9110673
