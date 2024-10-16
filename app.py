@@ -18,7 +18,7 @@ with st.sidebar:
         default_choice=0,
     )
 if tabs == "Home":
-    st.info(
+    st.markdown(
         """
         ### Quick info
         - **Title:** Suitability Mapping for new agroforestry plots of cacoa and coffee in Thailand
@@ -32,13 +32,10 @@ if tabs == "Home":
 
         """
     )
-
-    st.markdown("### About the project")
-    st.markdown(
-        "![Alt text](https://lwr.org/sites/default/files/styles/hero_image_country/public/DSC03745.JPG.jpeg?itok=rSImDUzV)"
-    )
-    st.markdown(
+    st.info(
         """
+        ### About the project
+        ![Alt text](https://lwr.org/sites/default/files/styles/hero_image_country/public/DSC03745.JPG.jpeg?itok=rSImDUzV)
         This project was one of the available projects during the course Geoscripting and involved developing a **suitability mapping** model to identify new areas for **cacao and coffee agroforestry in Thailand**. 
         
         In this project **land use, soil texture, slope, precipitation, road and stream data** were used(see Data sources). 
