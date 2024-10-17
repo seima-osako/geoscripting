@@ -167,19 +167,28 @@ elif tabs == "Map":
             - **Threshold 2:** Defines the boundary between Sub-suitable and Suitable areas.
             """
         )
+        if suitability_map == "Combined":
+            max_value = 60
+            value_1 = 40
+            value_2 = 50
+        else:
+            max_value = 30
+            value_1 = 18
+            value_2 = 24
+
         threshold1 = st.slider(
             "Threshold1 between Unsuitable and Sub-suitable",
-            min_value=2,
-            max_value=60,
-            value=40,
+            min_value=5,
+            max_value=max_value,
+            value=value_1,
             step=1,
         )
 
         threshold2 = st.slider(
             "Threshold2 between Sub-suitable and Suitable",
-            min_value=2,
-            max_value=60,
-            value=50,
+            min_value=5,
+            max_value=max_value,
+            value=value_2,
             step=1,
         )
 
