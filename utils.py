@@ -11,21 +11,21 @@ import tempfile
 
 BASEMAPS = {
     "Google-Maps": folium.TileLayer(
-        tiles="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+        tiles="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en",
         attr="Google",
         name="Google Maps",
         overlay=True,
         control=True,
     ),
     "Google-Satellite-Hybrid": folium.TileLayer(
-        tiles="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+        tiles="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&hl=en",
         attr="Google",
         name="Google Satellite",
         overlay=True,
         control=True,
     ),
     "Google-Terrain": folium.TileLayer(
-        tiles="https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",
+        tiles="https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=en",
         attr="Google",
         name="Google Terrain",
         overlay=True,
