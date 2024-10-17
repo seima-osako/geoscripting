@@ -9,10 +9,42 @@ from streamlit_folium import st_folium
 from shapely.geometry import shape
 import tempfile
 
+BASEMAPS = {
+    "Google-Maps": folium.TileLayer(
+        tiles="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+        attr="Google",
+        name="Google Maps",
+        overlay=True,
+        control=True,
+    ),
+    "Google-Satellite-Hybrid": folium.TileLayer(
+        tiles="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+        attr="Google",
+        name="Google Satellite",
+        overlay=True,
+        control=True,
+    ),
+    "Google-Terrain": folium.TileLayer(
+        tiles="https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",
+        attr="Google",
+        name="Google Terrain",
+        overlay=True,
+        control=True,
+    ),
+    "Esri-Satellite": folium.TileLayer(
+        tiles="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        attr="Esri",
+        name="Esri Satellite",
+        overlay=True,
+        control=True,
+    ),
+}
+
 
 # Function to display the map and analyze suitability based on threshold values
-def show_map(tiff_path, threshold1, threshold2):
-
+def show_map(tiff_path, threshold1, threshold2, bs, opacity):
+    # if "all_drawings" not in st.session_state:
+    #    st.session_state.all_drawings = []
     # Open the GeoTIFF file and read the data
     with rasterio.open(tiff_path) as src:
         data = src.read(1)
@@ -47,7 +79,6 @@ def show_map(tiff_path, threshold1, threshold2):
         # Layout: Split into map and chart columns
         col_map, col_charts = st.columns([2, 1])
         with col_map:
-
             # Define colors for each suitability class
             color_mapping = {
                 1: [255, 0, 0, 255],  # Red for Unsuitable
@@ -72,19 +103,21 @@ def show_map(tiff_path, threshold1, threshold2):
                 ],
                 zoom_start=12,
             )
-
+            BASEMAPS[bs].add_to(m)
             # Add the classified raster as an overlay on the map
             # Reference: https://python-visualization.github.io/folium/latest/user_guide/raster_layers/image_overlay.html
             folium.raster_layers.ImageOverlay(
                 name="Classified",
                 image=colored_classified,
                 bounds=[[bounds.bottom, bounds.left], [bounds.top, bounds.right]],
-                opacity=0.6,
+                opacity=opacity,
                 interactive=True,
                 cross_origin=False,
                 zindex=1,
             ).add_to(m)
 
+            # for drawing in st.session_state.all_drawings:
+            #    folium.GeoJson(drawing).add_to(m)
             # Add drawing tools to the map for selecting regions
             draw = Draw(
                 draw_options={
@@ -99,13 +132,24 @@ def show_map(tiff_path, threshold1, threshold2):
             )
             draw.add_to(m)
 
-            # Display the map in the Streamlit app
+            # マップを表示し、描画データを取得
             map_data = st_folium(
                 m,
                 height=800,
-                returned_objects=["all_drawings"],
                 use_container_width=True,
+                key="folium_map",
             )
+
+            # if st.button("保存"):
+            #    if map_data and "all_drawings" in map_data and map_data["all_drawings"]:
+            #        new_drawings = map_data["all_drawings"]
+            #        for drawing in new_drawings:
+            #            if drawing not in st.session_state.all_drawings:
+            #                st.session_state.all_drawings.append(drawing)
+            #        st.rerun()
+            #    else:
+            #        st.warning("ポリゴンを描画してください。")
+
         with col_charts:
             # Display a pie chart showing the overall suitability distribution
             st.write("**Overall Suitability Distribution**")
@@ -132,10 +176,11 @@ def show_map(tiff_path, threshold1, threshold2):
 
             # Button to extract selected area
             if st.button("Extract"):
+                # if st.session_state.all_drawings:
+                #    geojson = st.session_state.all_drawings[-1]
                 if map_data and map_data["all_drawings"]:
-                    geojson = map_data["all_drawings"][
-                        -1
-                    ]  # Get the drawn shape (GeoJSON)
+                    geojson = map_data["all_drawings"][-1]
+                    # Get the drawn shape (GeoJSON)
                     roi_geom = shape(
                         geojson["geometry"]
                     )  # Convert GeoJSON to Shapely geometry

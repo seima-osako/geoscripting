@@ -3,6 +3,7 @@ import streamlit as st
 import streamlit_mermaid as stmd
 from st_on_hover_tabs import on_hover_tabs
 
+from utils import BASEMAPS
 from utils import show_map
 
 st.set_page_config(layout="wide")
@@ -139,7 +140,7 @@ elif tabs == "Dataset":
         markdown_content = file.read()
         st.markdown(markdown_content)
 elif tabs == "Map":
-    with st.expander("How to use the map"):
+    with st.expander("**How to use the map**"):
         st.info(
             """
         **View Suitability Map**
@@ -158,7 +159,7 @@ elif tabs == "Map":
         index=2,
         horizontal=True,
     )
-    with st.expander("Threshold Settings"):
+    with st.expander("**Settings**"):
         st.markdown(
             """
             Adjust the thresholds to classify areas as Unsuitable, Sub-suitable, or Suitable.
@@ -182,12 +183,28 @@ elif tabs == "Map":
             step=1,
         )
 
+        bs = st.radio(
+            "🗺Basemap:",
+            (
+                "Google-Satellite-Hybrid",
+                "Google-Maps",
+                "Google-Terrain",
+                "Esri-Satellite",
+            ),
+        )
+        opacity = st.slider(
+            "Transparency",
+            min_value=0.0,
+            max_value=1.0,
+            value=0.6,
+            step=0.1,
+        )
     if suitability_map == "Coffee":
         tiff_path = "data/coffee_suitability.tif"
-        show_map(tiff_path, threshold1, threshold2)
+        show_map(tiff_path, threshold1, threshold2, bs, opacity)
     elif suitability_map == "Cacao":
         tiff_path = "data/cacao_suitability.tif"
-        show_map(tiff_path, threshold1, threshold2)
+        show_map(tiff_path, threshold1, threshold2, bs, opacity)
     else:
         tiff_path = "data/suitability.tif"
-        show_map(tiff_path, threshold1, threshold2)
+        show_map(tiff_path, threshold1, threshold2, bs, opacity)
